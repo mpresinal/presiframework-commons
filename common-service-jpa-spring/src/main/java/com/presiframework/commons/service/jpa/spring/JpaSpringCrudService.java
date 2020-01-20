@@ -22,7 +22,7 @@ import com.presiframework.common.service.CrudService;
 
 /**
  *
- * @author Miguel Presinal <mpresinal@bancocaribe.com.do>
+ * @author Miguel Presinal <presinal378@gmail.com>
  * @param <E>
  * @param <F>
  * @since 1.0
