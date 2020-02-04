@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.presiframework.common.datalayer.entities.exceptions;
 
 import com.presiframework.common.datalayer.SerialVersion;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
+import javax.validation.ConstraintViolation;
 //import javax.validation.ConstraintViolation;
 
 /**
@@ -32,8 +33,19 @@ public class BeanValidationException extends RequiredFieldException {
 
     private final Set<?> violations;
 
+    private static String extractFieldName(Set<?> violations) {
+        StringBuilder buffer = new StringBuilder();
+        final String COMMA_SEPRATOR = ",";
+        for (Object v : violations) {
+            if (v instanceof ConstraintViolation) {
+                buffer.append(((ConstraintViolation) v).getPropertyPath().toString()).append(COMMA_SEPRATOR);
+            }
+        }
+        return buffer.length() > 0? buffer.substring(0, buffer.length()-1) : buffer.toString();
+    }
+
     public BeanValidationException(Set<?> violations) {
-        super("");
+        super(extractFieldName(violations));
         this.violations = violations;
     }
 

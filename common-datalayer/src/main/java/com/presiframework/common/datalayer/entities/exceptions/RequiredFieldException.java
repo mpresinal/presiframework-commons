@@ -31,7 +31,7 @@ public class RequiredFieldException extends AbstractFieldException {
     private static final long serialVersionUID = SerialVersion.CURRENT_VERSION;
 
     public static final int CODE = 1004;
-    public static final String DESCRIPTION = "There are fields required that were not provided.";
+    public static final String DESCRIPTION = "There are required fields that were not provided.";
 
     public RequiredFieldException() {
         this(null);
