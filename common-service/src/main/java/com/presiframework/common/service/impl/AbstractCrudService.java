@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.presiframework.common.service.impl;
 
 import com.presiframework.common.service.CrudService;
@@ -51,7 +50,7 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
     public abstract EntityValidator<E> getEntityValidator();
 
     public abstract <S extends E, ID> CRUDOperations<S, ID> getRepository();
-    
+
     public abstract <S extends E> FilterOperations<S> getDataFilter();
 
     @Override
@@ -82,18 +81,18 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
 
         CRUDOperations<E, Long> repository = getRepository();
 
+        validateRepositoryNotNull(repository);
+        
+        EntityValidator<E> validator = getEntityValidator();
+
+        if (validator != null) {
+            logger.debug(METHOD + "Validating entity....");
+            validator.validateEntity(entity, updateMode);
+            logger.debug(METHOD + "Validating entity....DONE");
+        }
+
         try {
-
-            EntityValidator<E> validator = getEntityValidator();
-
-            if (validator != null) {
-                logger.debug(METHOD + "Validating entity....");
-                validator.validateEntity(entity, updateMode);
-                logger.debug(METHOD + "Validating entity....DONE");
-            }
-
-            validateRepositoryNotNull(repository);
-
+            
             IntegrityValidator<E> validadorIntegridad = getIntegrityValidator();
             if (validadorIntegridad != null) {
                 logger.debug(METHOD + "Validating entity data integrity...");
@@ -275,12 +274,12 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
             return getDataFilter().filter(filter);
         });
     }
-    
-    private List<E> doSearchAction(Supplier<Iterable<E>> supplier) throws InternalServiceException{
+
+    private List<E> doSearchAction(Supplier<Iterable<E>> supplier) throws InternalServiceException {
         CRUDOperations<E, Long> repository = getRepository();
         final List<E> list = new ArrayList<>();
         try {
-            validateRepositoryNotNull(repository);            
+            validateRepositoryNotNull(repository);
             Iterable<E> iterable = supplier.get();
             if (iterable != null) {
                 iterable.forEach(entity -> {
@@ -294,7 +293,6 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
 
         return list;
     }
-    
 
     @Override
     public E findById(Long id) throws InternalServiceException, NoDataFoundException {
@@ -302,7 +300,7 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
         Logger logger = getLogger();
         logger.info(METHOD + "Enter");
         logger.info(METHOD + "id = " + id);
-        
+
         CRUDOperations<E, Long> repository = getRepository();
         E entity = null;
         try {
