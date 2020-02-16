@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import com.presiframework.common.datalayer.repository.SearchCriteria;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -83,37 +84,8 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
 
         validateRepositoryNotNull(repository);
         
-        EntityValidator<E> validator = getEntityValidator();
-
-        if (validator != null) {
-            logger.debug(METHOD + "Validating entity....");
-            validator.validateEntity(entity, updateMode);
-            logger.debug(METHOD + "Validating entity....DONE");
-        }
-
-        try {
-            
-            IntegrityValidator<E> validadorIntegridad = getIntegrityValidator();
-            if (validadorIntegridad != null) {
-                logger.debug(METHOD + "Validating entity data integrity...");
-                validadorIntegridad.validate(entity);
-                logger.debug(METHOD + "Validating entity data integrity...DONE");
-            }
-
-        } catch (Exception ex) {
-
-            if (ex instanceof IntegrityViolationException) {
-                throw (IntegrityViolationException) ex;
-
-            } else if (ex instanceof ExistingDataException) {
-                throw (ExistingDataException) ex;
-            }
-
-            throw new InternalServiceException(ex);
-
-        } finally {
-            logger.info(METHOD + "Exist");
-        }
+        validateEntityRequiredFields(entity, updateMode);
+        validateEntityIntegrity(entity);
 
         try {
             logger.debug(METHOD + "Persisting entitiy...");
@@ -135,6 +107,63 @@ public abstract class AbstractCrudService<E extends CommonEntity<? extends Numbe
         return entity;
     }
 
+    protected void validateEntityRequiredFields(E entity, boolean updateMode) throws RequiredFieldException {
+        final String METHOD = "validateEntityRequiredFields():: ";
+        final Logger logger = getLogger();
+        logger.info(METHOD + "Enter");
+        logger.debug(METHOD + "entity = " + entity);
+        logger.debug(METHOD + "updateMode = " + updateMode);
+        
+        logger.info(METHOD + "Validating entity....");
+        if (Objects.isNull(entity.getCreatedBy())) {
+            logger.info(METHOD + "field: createdBy, is required");
+            throw new RequiredFieldException("createdBy");
+        }
+        
+        if (Objects.isNull(entity.getUpdatedBy())) {
+            logger.info(METHOD + "field: updatedBy, is required");
+            throw new RequiredFieldException("updatedBy");
+        }
+        
+        EntityValidator<E> validator = getEntityValidator();
+
+        if (validator != null) {
+            logger.debug(METHOD + "Validating entity....");
+            validator.validateEntity(entity, updateMode);            
+        }
+        logger.info(METHOD + "Validating entity....OK");
+    }
+    
+    protected void validateEntityIntegrity(E entity) throws IntegrityViolationException, ExistingDataException, InternalServiceException {
+        final String METHOD = "validateEntityIntegrity():: ";
+        final Logger logger = getLogger();
+        logger.info(METHOD + "Enter");
+        logger.debug(METHOD + "entity = " + entity);
+        try {
+            
+            IntegrityValidator<E> validadorIntegridad = getIntegrityValidator();
+            if (validadorIntegridad != null) {
+                logger.debug(METHOD + "Validating entity integrity...");
+                validadorIntegridad.validate(entity);
+                logger.debug(METHOD + "Validating entity integrity...DONE");
+            }
+
+        } catch (Exception ex) {
+
+            if (ex instanceof IntegrityViolationException) {
+                throw (IntegrityViolationException) ex;
+
+            } else if (ex instanceof ExistingDataException) {
+                throw (ExistingDataException) ex;
+            }
+
+            throw new InternalServiceException(ex);
+
+        } finally {
+            logger.info(METHOD + "Exist");
+        }
+    }
+    
     protected boolean deleteChildrenEntity(E entity) throws Exception {
         return true;
     }
