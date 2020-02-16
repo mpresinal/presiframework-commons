@@ -18,12 +18,14 @@ package com.presiframework.common.rest.handler.exception;
 
 import com.presiframework.common.datalayer.entities.exceptions.AbstractFieldException;
 import com.presiframework.common.datalayer.entities.exceptions.BaseException;
+import com.presiframework.common.datalayer.entities.exceptions.BeanValidationException;
 import com.presiframework.common.datalayer.entities.exceptions.NoDataFoundException;
 import com.presiframework.common.rest.response.ErrorMessage;
 import com.presiframework.common.rest.response.ValidationErrorMessage;
 import com.presiframework.common.service.exception.InternalServiceException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -68,13 +70,14 @@ public class ExceptionHandler {
     public List<ErrorMessage> extractErrorMessagesFromException(Exception e) {
         List<ErrorMessage> list = new ArrayList<>();
 
-        /*if (e instanceof BeanValidationException) {
+        if (e instanceof BeanValidationException) {
             BeanValidationException ex = (BeanValidationException) e;            
             ex.getViolations().forEach(v -> {
-                list.add(new ValidationErrorMessage(ex.getCodigo(), v.getPropertyPath().iterator().next().getName(), v.getMessage()));
+                ConstraintViolation cv = (ConstraintViolation) v;
+                list.add(new ValidationErrorMessage(ex.getCode(), cv.getPropertyPath().iterator().next().getName(), cv.getMessage()));
             });
             
-        } else */
+        } else
         if (e instanceof AbstractFieldException) {
             AbstractFieldException ex = (AbstractFieldException) e;
 
