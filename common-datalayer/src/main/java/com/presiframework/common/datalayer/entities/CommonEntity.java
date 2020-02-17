@@ -109,6 +109,21 @@ public class CommonEntity<ID> implements Serializable {
         this.status = status;
     }
 
+    
+    public void onPrePersist() {
+        if (creationDate == null) {
+            creationDate = new Date();
+        }
+        
+        if (lastUpdate == null) {
+            lastUpdate = new Date();
+        }
+    }
+    
+    public void onPreUpdate() {
+        lastUpdate = new Date();
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

@@ -26,6 +26,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 
 /**
@@ -93,4 +95,16 @@ public class JpaCommonEntity extends CommonEntity<Long> {
     public boolean isDeleted() {
         return super.isDeleted();
     }
+
+    @PreUpdate
+    @Override
+    public void onPreUpdate() {
+        super.onPreUpdate();
+    }
+
+    @PrePersist
+    @Override
+    public void onPrePersist() {
+        super.onPrePersist();
+    }    
 }
