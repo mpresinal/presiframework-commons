@@ -24,7 +24,6 @@ import com.presiframework.common.datalayer.repository.SearchCriteria;
  * 
  * @author Miguel Presinal <presinal378@gmail.com>
  * @since 1.0
- * @see com.bancocaribe.commons.service.test.CrudServiceTest
  */
 public class CrudServiceTestConfig<E extends CommonEntity, C extends SearchCriteria > {
 
