@@ -19,7 +19,6 @@ package com.presiframework.common.rest.response;
 import java.io.Serializable;
 
 /**
- * Esta clase es la representacion de un error de servicio.
  *
  * @author Miguel Presinal <presinal378@gmail.com>
  * @since 1.0
