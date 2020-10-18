@@ -154,7 +154,7 @@ public class CommonEntity<ID> implements Serializable {
         return "CommonField{" + "id=" + id + ", creationDate=" + creationDate + ", lastUpdate=" + lastUpdate + ", createdBy=" + createdBy+ ",updatedBy=" + updatedBy + ", deleted=" + deleted + ", status=" + status + '}';
     }
 
-    public String toString(String classname, String props) {
+    protected String toString(String classname, String props) {
         return classname + '{'
                 + "id=" + id
                 + props
